@@ -1,0 +1,15 @@
+configuration:
+  runtime: "concord-v2"
+flows:
+  default:
+    - task: http
+      in:
+        method: GET
+        headers:
+          Authorization: "Bearer ${oidcToken}"
+        url: "http://localhost:${mockOidcPort}/userinfo"
+        response: json
+      out: userInfo
+    
+    - log: "OIDC User: ${userInfo.name}"
+    - log: "OIDC Groups: ${userInfo.groups}"
