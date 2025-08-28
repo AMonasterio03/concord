@@ -1,0 +1,21 @@
+configuration:
+  runtime: "concord-v2"
+flows:
+  default:
+    - script: js
+      body: |
+        const sessionToken = processInfo.sessionToken;
+        const apiKey = "${apiKey}";
+        result.set('sessionToken', sessionToken);
+        result.set('apiKey', apiKey);
+    
+    - task: http
+      in:
+        method: GET
+        headers:
+          X-Concord-SessionToken: "${sessionToken}"
+        url: "${serverUrl}/api/v1/org?limit=1"
+        response: json
+      out: sessionResponse
+    
+    - log: "Session auth successful: ${sessionResponse.statusCode}"
